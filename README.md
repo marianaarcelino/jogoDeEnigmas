@@ -23,12 +23,14 @@ O cliente utiliza UDP broadcast para descobrir automaticamente o servidor na red
 
 ## Como rodar
 ### 1. Servidor
+Digite no seu terminal:
 `python3 servidor.py`
 
 - O servidor escuta UDP na porta 5001 para descoberta e TCP na porta 6000 para comunicação com clientes.
 - Logs do terminal mostram conexões e andamento do jogo.
 
 ### 2. Cliente
+Digite no seu terminal:
 `python3 cliente.py`
 
 - **local →** o cliente tenta descobrir automaticamente o servidor na **mesma rede** usando UDP broadcast.
