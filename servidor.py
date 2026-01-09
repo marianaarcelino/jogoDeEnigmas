@@ -2,12 +2,14 @@ import socket
 import threading
 import random
 import unicodedata
+from pyngrok import ngrok, conf
 
 
 # Configurações
 TCP_PORTA = 6000
 UDP_PORTA = 5001
 CHAVE_BROADCAST = "PROCURANDO_SERVIDOR_ENIGMA"
+NGROK_AUTH_TOKEN = "37za4yjc11ln8ToIU7VdmNmlcmC_5MgVRWnqmo75Zw5yCMijo" #⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
 
 # Base de usuários simples
 USUARIOS = { } 
@@ -134,6 +136,30 @@ def escutar_broadcast_udp():
             resposta = f"SERVER_FOUND|{TCP_PORTA}"
             udp_sock.sendto(resposta.encode(), endereco)
 
+def iniciar_ngrok():
+    """ Abre o túnel para conexões via Internet """
+    print("[NGROK] Abrindo túnel remoto...")
+    try:
+        conf.get_default().auth_token = NGROK_AUTH_TOKEN
+        # Criando túnel TCP para a porta do nosso servidor
+        tunnel = ngrok.connect(TCP_PORTA, "tcp")
+        
+        # Extraindo o Host e a Porta do link do Ngrok
+        # Ex: tcp://0.tcp.sa.ngrok.io:12345 -> 0.tcp.sa.ngrok.io e 12345
+        url_limpa = tunnel.public_url.replace("tcp://", "")
+        host_remoto, porta_remota = url_limpa.split(":")
+        
+        print(f"\n" + "="*40)
+        print(f"🌐 MODO REMOTO ATIVO (NGROK)")
+        print(f"HOST: {host_remoto}")
+        print(f"PORTA: {porta_remota}")
+        print("="*40 + "\n")
+    except Exception as e:
+        print(f"[ERRO NGROK] Falha ao iniciar: {e}")      
+
+
+
+
 def tratar_cliente(socket_cliente, endereco):
     """ Gerencia a conexão de um cliente específico """
     print(f"[TCP] Nova conexão: {endereco}")
@@ -256,6 +282,9 @@ def start_server():
     # Inicia thread UDP
     threading.Thread(target=escutar_broadcast_udp, daemon=True).start()
 
+    # 2. Inicia Ngrok (Para rede remota/internet)
+    iniciar_ngrok()
+
     # Inicia TCP
     tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcp_sock.bind(('0.0.0.0', TCP_PORTA))
@@ -268,5 +297,4 @@ def start_server():
 
 if __name__ == "__main__":
     start_server()
-
 

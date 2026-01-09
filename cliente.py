@@ -11,7 +11,6 @@ class ClienteRede:
         self.conectado = False
         self.esperando_sala = False
 
-
     def descobrir_servidor(self):
         """Busca automática do servidor via UDP broadcast"""
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -40,6 +39,7 @@ class ClienteRede:
         self.socket_cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket_cliente.connect((ip, porta))
 
+        # Pede autenticação
         msg = self.socket_cliente.recv(1024).decode()
         if msg == "AUTH_REQUIRED":
             self.socket_cliente.send(f"{usuario}:{senha}".encode())
@@ -86,14 +86,25 @@ class ClienteRede:
 def main():
     cliente = ClienteRede()
 
-    # 1. Descoberta automática do servidor
-    servidor_info = cliente.descobrir_servidor()
-    if not servidor_info:
+    # Pergunta se quer modo local ou remoto
+    modo = input("Modo de conexão (local / remoto): ").strip().lower()
+
+    if modo == "local":
+        servidor_info = cliente.descobrir_servidor()
+        if not servidor_info:
+            print("[CLIENTE] Nenhum servidor local encontrado.")
+            return
+        ip, porta = servidor_info
+
+    elif modo == "remoto":
+        ip = input("Digite o host do servidor: ").strip()
+        porta = int(input("Digite a porta do servidor: ").strip())
+
+    else:
+        print("Modo inválido.")
         return
 
-    ip, porta = servidor_info
-
-    # 2. Login (hardcoded só para teste)
+    # Login
     usuario = input("Usuário: ")
     senha = input("Senha: ")
 
@@ -101,16 +112,13 @@ def main():
         print("[CLIENTE] Pronto para jogar")
 
         # Mantém o cliente vivo
-    try:
-        while True:
-            msg = input("> ")
-            cliente.socket_cliente.send(msg.encode())
-    except KeyboardInterrupt:
-        print("\n[CLIENTE] Encerrando...")
+        try:
+            while True:
+                msg = input("> ")
+                cliente.socket_cliente.send(msg.encode())
+        except KeyboardInterrupt:
+            print("\n[CLIENTE] Encerrando...")
 
 
 if __name__ == "__main__":
     main()
-
-
-
