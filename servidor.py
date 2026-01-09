@@ -9,7 +9,7 @@ from pyngrok import ngrok, conf
 TCP_PORTA = 6000
 UDP_PORTA = 5001
 CHAVE_BROADCAST = "PROCURANDO_SERVIDOR_ENIGMA"
-NGROK_AUTH_TOKEN = "37za4yjc11ln8ToIU7VdmNmlcmC_5MgVRWnqmo75Zw5yCMijo" #⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+NGROK_AUTH_TOKEN = "37za4yjc11ln8ToIU7VdmNmlcmC_5MgVRWnqmo75Zw5yCMijo" 
 
 # Base de usuários simples
 USUARIOS = { } 
