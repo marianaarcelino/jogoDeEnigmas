@@ -1,4 +1,4 @@
-# README.md – Jogo do Enigma 
+# README.md – Jogo de Enigmas
 
 Sistema de Resolução Colaborativa de Pistas 🕵️‍♂️🕵️‍♀️
 
